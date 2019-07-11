@@ -10,6 +10,7 @@ namespace Part3
 {
     public class TetrisGameA : IGameBase
     {
+        public event EventHandler GameOver;
         public int FieldWidth { get; set; }
         public int FieldHeight { get; set; }
         public bool[,] CurrentField { get; set; } 
@@ -25,6 +26,7 @@ namespace Part3
                 if (value)
                 {
                     timer.Stop();
+                    
                 }
                 else
                 {
@@ -35,7 +37,17 @@ namespace Part3
         }
         public bool[,] FieldToDisplay { get; set; }
         public bool[,] FieldAdditional { get; set; }
-        public bool EndGame { get; set; }
+
+        private bool _endGame;
+        public bool EndGame
+        {
+            get => _endGame;
+            set
+            {
+                _endGame = value;
+                GameOver(this, null);
+            }
+        }
 
         private Timer timer = new Timer(750);
         public int test = 0;

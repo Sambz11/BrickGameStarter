@@ -9,6 +9,7 @@ namespace Part3
 {
     class SnakeGameA : IGameBase
     {
+        public event EventHandler GameOver;
         public int FieldWidth { get; set; }
         public int FieldHeight { get; set; }
         public int Score { get; set; }
@@ -24,6 +25,7 @@ namespace Part3
                 if (value)
                 {
                     timer.Stop();
+                    GameOver(this, null);
                 } else
                 {
                     timer.Start();
@@ -35,6 +37,8 @@ namespace Part3
         private (int X, int Y) Food;
 
         System.Timers.Timer timer = new System.Timers.Timer(300);
+
+        
 
         public SnakeGameA(int width = 10, int height = 20)
         {
@@ -100,6 +104,7 @@ namespace Part3
                     FieldToDisplay[i, j] = false;
                 }
             }
+
             foreach (var item in Snake.Body)
             {
                 try

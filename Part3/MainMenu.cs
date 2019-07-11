@@ -11,6 +11,7 @@ namespace Part3
         public delegate void MenuHandler(object sender, MenuEventArgs e);
 
         public static event MenuHandler GameChoosed;
+        public event EventHandler GameOver;
         public int Score { get; set; }
         public bool Pause { get; set; }
         public bool[,] FieldToDisplay { get; set; }

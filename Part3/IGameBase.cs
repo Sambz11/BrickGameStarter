@@ -8,6 +8,8 @@ namespace Part3
 {
     interface IGameBase
     {
+
+        event EventHandler GameOver;
         int Score { get; set; }
         bool Pause { get; set; }
         bool[,] FieldToDisplay { get; set; }
@@ -20,4 +22,5 @@ namespace Part3
         void FuncKeyPressed();
 
     }
+
 }

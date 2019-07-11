@@ -51,12 +51,18 @@ namespace Part3
             }
 
             MainMenu.GameChoosed += MainMenu_GameChoosed;
+            
             timer.Elapsed += Timer_Elapsed;
 
             timer.Start();
             
         }
 
+        private void GameOverHandler(object sender, EventArgs e)
+        {
+            currentGame.GameOver -= GameOverHandler;
+            currentGame = new MainMenu();
+        }
 
         private void MainMenu_GameChoosed(object sender, MainMenu.MenuEventArgs e)
         {
@@ -64,11 +70,11 @@ namespace Part3
                 currentGame = new TetrisGameA();
             if (e.GameNumber == 1)
                 currentGame = new SnakeGameA();
+            currentGame.GameOver += GameOverHandler;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
             currentGame.EndGame = false;
         }
         
