@@ -34,7 +34,7 @@ namespace Part3
 
         private (int X, int Y) Food;
 
-        System.Timers.Timer timer = new System.Timers.Timer(500);
+        System.Timers.Timer timer = new System.Timers.Timer(300);
 
         public SnakeGameA(int width = 10, int height = 20)
         {
@@ -72,10 +72,19 @@ namespace Part3
 
         private (int X, int Y) NewFood()
         {
-            int seed = new Random().Next(FieldWidth * FieldHeight);
 
-            int newX = seed / FieldHeight;
-            int newY = seed % FieldHeight;
+
+            int newX;
+            int newY;
+
+            do
+            {
+                int seed = new Random().Next(FieldWidth * FieldHeight);
+
+                newX = seed / FieldHeight;
+                newY = seed % FieldHeight;
+
+            } while (FieldToDisplay[newX, newY]);
 
             Debug.WriteLine("New Food = ({0}, {1})", newX, newY);
 

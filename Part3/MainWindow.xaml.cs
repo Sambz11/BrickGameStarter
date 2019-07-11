@@ -22,13 +22,18 @@ namespace Part3
     public partial class MainWindow : Window
     {
         
+        
         //IGameBase currentGame = new TetrisGameA();
-        IGameBase currentGame = new SnakeGameA();
+        //IGameBase currentGame = new SnakeGameA();
+        IGameBase currentGame = new MainMenu();
+        
+
         System.Timers.Timer timer = new System.Timers.Timer(10);
         
         // ! Заменить на переменные !
         Rectangle[] displayDots = new Rectangle[10 * 20];
         Rectangle[] additionalDisplayDot = new Rectangle[4 * 4];
+
         public MainWindow()
         {
             InitializeComponent();
@@ -45,18 +50,28 @@ namespace Part3
                 AdditionalGrid.Children.Add(additionalDisplayDot[i]);
             }
 
+            MainMenu.GameChoosed += MainMenu_GameChoosed;
             timer.Elapsed += Timer_Elapsed;
 
             timer.Start();
             
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+
+        private void MainMenu_GameChoosed(object sender, MainMenu.MenuEventArgs e)
         {
-            currentGame.EndGame = false;
+            if (e.GameNumber == 0)
+                currentGame = new TetrisGameA();
+            if (e.GameNumber == 1)
+                currentGame = new SnakeGameA();
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
 
+            currentGame.EndGame = false;
+        }
+        
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             try
@@ -126,8 +141,6 @@ namespace Part3
                 currentGame.FuncKeyPressed();
                 Dispatcher.Invoke(displayUpdate);
             }
-                
-
         }
     }
 }
