@@ -38,8 +38,6 @@ namespace Part3
 
         System.Timers.Timer timer = new System.Timers.Timer(300);
 
-        
-
         public SnakeGameA(int width = 10, int height = 20)
         {
             FieldWidth = width;
@@ -52,10 +50,10 @@ namespace Part3
             Snake.Body.Enqueue((4, 16));
             Food = NewFood();
             FieldToDisplay[Food.X, Food.Y] = true;
+
             foreach (var item in Snake.Body)
-            {
                 FieldToDisplay[item.X, item.Y] = true;
-            }
+
             timer.Elapsed += TimerTick;
             timer.Start();
         }
@@ -64,6 +62,7 @@ namespace Part3
         {
             Debug.WriteLine("Tick1");
             Snake.MoveTo();
+
             if (Snake.Head == Food)
             {
                 Snake.Add();
@@ -71,13 +70,10 @@ namespace Part3
             }
 
             updateDisplay();
-
         }
 
         private (int X, int Y) NewFood()
         {
-
-
             int newX;
             int newY;
 
@@ -98,12 +94,8 @@ namespace Part3
         private void updateDisplay()
         {
             for (int j = 0; j < FieldHeight; j++)
-            {
                 for (int i = 0; i < FieldWidth; i++)
-                {
                     FieldToDisplay[i, j] = false;
-                }
-            }
 
             foreach (var item in Snake.Body)
             {
@@ -118,6 +110,9 @@ namespace Part3
             FieldToDisplay[Food.X, Food.Y] = true;
         }
 
+        //
+        // Override methods
+        //
         public void DownKey()
         {
             Snake.Direction = 3;
@@ -159,6 +154,7 @@ namespace Part3
                 set
                 {
                     _direction = value;
+
                     switch (value)
                     {
                         case 1:
@@ -181,29 +177,20 @@ namespace Part3
                     
                 }
             }
+
             public static Queue<(int X, int Y)> Body = new Queue<(int X, int Y)>();
-            public static (int X, int Y) Head
-            {
-                get
-                {
-                    return Body.Last();
-                }
-            }
-            public static (int X, int Y) Tail
-            {
-                get
-                {
-                    return Body.Peek();
-                }
-            }
+            public static (int X, int Y) Head { get => Body.Last(); }
+            public static (int X, int Y) Tail { get => Body.Peek(); }
 
             public static bool MoveTo()
             {
                 Body.Enqueue((Head.X + dx, Head.Y + dy));
+
                 if (!sectorAdded)
                     Body.Dequeue();
                 else
                     sectorAdded = false;
+
                 return true;
             }
 
@@ -212,7 +199,5 @@ namespace Part3
                 sectorAdded = true;
             }
         }
-
     }
-
 }

@@ -21,16 +21,12 @@ namespace Part3
     /// </summary>
     public partial class MainWindow : Window
     {
-        
-        
         //IGameBase currentGame = new TetrisGameA();
         //IGameBase currentGame = new SnakeGameA();
         IGameBase currentGame = new MainMenu();
-        
 
         System.Timers.Timer timer = new System.Timers.Timer(10);
         
-        // ! Заменить на переменные !
         Rectangle[] displayDots = new Rectangle[10 * 20];
         Rectangle[] additionalDisplayDot = new Rectangle[4 * 4];
 
@@ -51,11 +47,9 @@ namespace Part3
             }
 
             MainMenu.GameChoosed += MainMenu_GameChoosed;
-            
             timer.Elapsed += Timer_Elapsed;
 
             timer.Start();
-            
         }
 
         private void GameOverHandler(object sender, EventArgs e)
@@ -68,8 +62,10 @@ namespace Part3
         {
             if (e.GameNumber == 0)
                 currentGame = new TetrisGameA();
+
             if (e.GameNumber == 1)
                 currentGame = new SnakeGameA();
+
             currentGame.GameOver += GameOverHandler;
         }
 
@@ -85,27 +81,19 @@ namespace Part3
                 Dispatcher.Invoke(displayUpdate);
             }catch (TaskCanceledException)
             {
-
+                Debug.WriteLine("Dispatcher Task Canceled");
             }
         }
 
         void displayUpdate()
         {
             for (int j = 0; j < 20; j++)
-            {
                 for (int i = 0; i < 10; i++)
-                {
                     displayDots[j * 10 + i].IsEnabled = currentGame.FieldToDisplay[i, j];
-                }
-            }
 
             for (int j = 0; j < 4; j++)
-            {
                 for (int i = 0; i < 4; i++)
-                {
                     additionalDisplayDot[j * 4 + i].IsEnabled = currentGame.FieldAdditional[i, j];
-                }
-            }
 
             ScoreLabel.Content = currentGame.Score.ToString("D6");
         }
@@ -136,9 +124,7 @@ namespace Part3
             if (e.Key == Key.P)
             {
                 if (!currentGame.Pause)
-                {
                     currentGame.Pause = true;
-                }
                 else
                     currentGame.Pause = false;
             }

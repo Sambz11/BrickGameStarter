@@ -20,13 +20,12 @@ namespace Part3
         private bool _pause = false;
         public bool Pause
         {
-            get { return _pause; }
+            get => _pause;
             set
             {
                 if (value)
                 {
                     timer.Stop();
-                    
                 }
                 else
                 {
@@ -44,8 +43,15 @@ namespace Part3
             get => _endGame;
             set
             {
-                _endGame = value;
-                GameOver(this, null);
+                if (value)
+                {
+                    timer.Stop();
+                    GameOver(this, null);
+                }
+                else
+                {
+                    timer.Start();
+                }
             }
         }
 
@@ -56,7 +62,6 @@ namespace Part3
         {
             CurrentField = new bool[width, height];
             FieldToDisplay = new bool[width, height];
-            // Attention !!!
             FieldAdditional = new bool[4, 4];
 
             foreach (var (X, Y) in NextFigure.Points)
@@ -75,7 +80,6 @@ namespace Part3
         {
             if (!MoveDown())
             {
-                //сохраняем 
                 WriteToField();
 
                 switch (CheckCrossRow())
@@ -97,22 +101,14 @@ namespace Part3
                 }
 
                 NextFigure.Points.CopyTo(CurrentFigure.Points, 0);
-                
                 NextFigure = new Figure();
 
                 for (int i = 0; i < 4; i++)
-                {
                     for (int j = 0; j < 4; j++)
-                    {
                         FieldAdditional[i, j] = false;
-                    }
-                }
 
                 foreach (var (X, Y) in NextFigure.Points)
-                {
                     FieldAdditional[X, Y] = true;
-                }
-
 
                 if (CheckEndGame())
                 {
@@ -127,25 +123,17 @@ namespace Part3
         private void PrepareForDisplay()
         {
             for (int j = 0; j < FieldHeight; j++)
-            {
                 for (int i = 0; i < FieldWidth; i++)
-                {
                     FieldToDisplay[i, j] = CurrentField[i, j];
-                }
-            }
 
             for (int i = 0; i < CurrentFigure.Points.Length; i++)
-            {
                 FieldToDisplay[CurrentFigure.Points[i].X, CurrentFigure.Points[i].Y] = true;
-            }
         }
 
         private void WriteToField()
         {
             for (int i = 0; i < CurrentFigure.Points.Length; i++)
-            {
                 CurrentField[CurrentFigure.Points[i].X, CurrentFigure.Points[i].Y] = true;
-            }
         }
         private void Rotate()
         {
@@ -153,17 +141,20 @@ namespace Part3
             CurrentFigure.Points.CopyTo(rescueFigure, 0);
             bool wrongPoints = false;
             var centerPoint = CurrentFigure.Points[1];
+
             for (int i = 0; i < CurrentFigure.Points.Length; i++)
             {
                 int x = CurrentFigure.Points[i].Y - centerPoint.Y;
                 int y = CurrentFigure.Points[i].X - centerPoint.X;
                 CurrentFigure.Points[i].X = centerPoint.X - x;
                 CurrentFigure.Points[i].Y = centerPoint.Y + y;
+
                 if (CurrentFigure.Points[i].X >= FieldWidth || CurrentFigure.Points[i].X < 0)
                 {
                     wrongPoints = true;
                     break;
                 }
+
                 if (CurrentField[CurrentFigure.Points[i].X, CurrentFigure.Points[i].Y] || CurrentFigure.Points[i].Y >= FieldHeight)
                 {
                     wrongPoints = true;
@@ -181,14 +172,12 @@ namespace Part3
         public bool MoveDown()
         {
             foreach (var (x, y) in CurrentFigure.Points)
-            {
                 if (y == FieldHeight - 1 || CurrentField[x, y + 1])
                     return false;
-            }
+
             for (int i = 0; i < CurrentFigure.Points.Length; i++)
-            {
-                    CurrentFigure.Points[i].Y++;
-            }
+                CurrentFigure.Points[i].Y++;
+
             PrepareForDisplay();
             return true;
         }
@@ -196,14 +185,12 @@ namespace Part3
         public bool MoveLeft()
         {
             foreach (var (x, y) in CurrentFigure.Points)
-            {
                 if (x == 0 || CurrentField[x - 1, y])
                     return false;
-            }
+
             for (int i = 0; i < CurrentFigure.Points.Length; i++)
-            {
                 CurrentFigure.Points[i].X--;
-            }
+
             PrepareForDisplay();
             return true;
         }
@@ -211,14 +198,12 @@ namespace Part3
         public bool MoveRight()
         {
             foreach (var (x, y) in CurrentFigure.Points)
-            {
                 if (x == FieldWidth - 1 || CurrentField[x+1, y])
                     return false;
-            }
+
             for (int i = 0; i < CurrentFigure.Points.Length; i++)
-            {
                 CurrentFigure.Points[i].X++;
-            }
+
             PrepareForDisplay();
             return true;
         }
@@ -226,6 +211,7 @@ namespace Part3
         private int CheckCrossRow()
         {
             int crossed = 0;
+
             for (int j = 0; j < FieldHeight; j++)
             {
                 int filled = 0;
@@ -241,16 +227,12 @@ namespace Part3
                 if (filled == FieldWidth)
                 {
                     for (int i = 0; i < FieldWidth; i++)
-                    {
                         CurrentField[i, j] = false;
-                    }
+
                     for (int i = j; i > 1; i--)
-                    {
                         for (int k = 0; k < FieldWidth; k++)
-                        {
                             CurrentField[k, i] = CurrentField[k, i - 1];
-                        }
-                    }
+
                     crossed++;
                 }
             }
@@ -261,12 +243,9 @@ namespace Part3
         public bool CheckEndGame()
         {
             foreach (var (X, Y) in NextFigure.Points)
-            {
                 if (CurrentField[X, Y])
-                {
                     return true;
-                }
-            }
+
             return false;
         }
 
@@ -293,28 +272,21 @@ namespace Part3
             if (!_pause)
                 Rotate();
         }
-        public void FuncKeyPressed()
-        {
-            
-        }
+        public void FuncKeyPressed() { }
     }
 
     class Figure
     {
-
         public (int X, int Y)[] Points { get; set; }
 
         public Figure()
         {
             Points = GetRandomFigure();
-
         }
 
         private (int X, int Y)[] GetRandomFigure()
         {
-
             int seed = new Random(DateTime.Now.Millisecond).Next(7);
-            //seed = 0;
 
             switch (seed)
             {
@@ -336,12 +308,6 @@ namespace Part3
                     return new[] { (0, 1), (1, 1), (0, 2), (1, 2) };
 
             }
-
-
-
         }
-
-        
     }
-
 }
